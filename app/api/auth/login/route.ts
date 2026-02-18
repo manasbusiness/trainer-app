@@ -50,7 +50,16 @@ export async function POST(req: Request) {
         return response;
     } catch (error) {
         if (error instanceof z.ZodError) {
-            return NextResponse.json({ message: "Invalid input", errors: error.errors }, { status: 400 });
+            return NextResponse.json(
+                {
+                    message: "Invalid input",
+                    errors: error.issues.map((err) => ({
+                        field: err.path[0],
+                        message: err.message,
+                    })),
+                },
+                { status: 400 }
+            );
         }
         return NextResponse.json({ message: "Something went wrong" }, { status: 500 });
     }
