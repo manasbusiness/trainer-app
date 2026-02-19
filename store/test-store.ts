@@ -3,11 +3,14 @@ import { create } from 'zustand';
 interface Question {
     id: string;
     question: string;
-    optionA: string;
-    optionB: string;
-    optionC: string;
-    optionD: string;
+    type: "MCQ" | "TRUE_FALSE" | "FIB" | "MATCHING";
     marks: number;
+    options: {
+        id: string;
+        text: string;
+        matchText?: string | null;
+        isCorrect: boolean;
+    }[];
 }
 
 interface TestState {

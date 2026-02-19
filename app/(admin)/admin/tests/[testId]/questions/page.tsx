@@ -55,7 +55,11 @@ export default async function QuestionsPage({ params }: { params: Promise<{ test
                             test.questions.map((q) => (
                                 <TableRow key={q.id}>
                                     <TableCell className="font-medium whitespace-pre-wrap">{q.question}</TableCell>
-                                    <TableCell>{q.correctAnswer}</TableCell>
+                                    <TableCell>
+                                        {q.type === 'MCQ' || q.type === 'TRUE_FALSE'
+                                            ? q.options.find(opt => opt.isCorrect)?.text
+                                            : q.correctAnswer}
+                                    </TableCell>
                                     <TableCell>{q.marks}</TableCell>
                                     <TableCell className="text-right">
                                         <div className="flex items-center justify-end gap-2">

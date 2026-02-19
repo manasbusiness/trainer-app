@@ -6,7 +6,13 @@ export default async function TestAttemptPage({ params }: { params: Promise<{ te
     const { testId } = await params;
     const test = await db.test.findUnique({
         where: { id: testId },
-        include: { questions: true }
+        include: {
+            questions: {
+                include: {
+                    options: true
+                }
+            }
+        }
     });
 
     if (!test) notFound();
