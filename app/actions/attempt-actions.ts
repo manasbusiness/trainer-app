@@ -34,7 +34,7 @@ export async function submitTestAttempt(testId: string, answers: Record<string, 
     // 2. Calculate score
     for (const q of test.questions) {
         const selected = answers[q.id];
-        const isCorrect = selected === q.correctOption;
+        const isCorrect = selected === q.correctAnswer;
 
         if (isCorrect) {
             score += q.marks;
@@ -44,7 +44,7 @@ export async function submitTestAttempt(testId: string, answers: Record<string, 
         if (selected) {
             answerRecords.push({
                 questionId: q.id,
-                selectedOption: selected,
+                submittedValue: selected,
                 isCorrect
             });
         }

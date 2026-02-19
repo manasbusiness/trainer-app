@@ -10,7 +10,7 @@ export default async function AnalysisPage({ params }: { params: Promise<{ testI
     const attempt = await db.testAttempt.findUnique({
         where: { id: attemptId },
         include: {
-            test: { include: { questions: true } },
+            test: { include: { questions: { include: { options: true } } } },
             answers: true
         }
     });
@@ -33,7 +33,7 @@ export default async function AnalysisPage({ params }: { params: Promise<{ testI
                     const answer = answerMap.get(q.id);
                     const isCorrect = answer?.isCorrect;
                     const isSkipped = !answer;
-                    const userAnswer = answer?.selectedOption;
+                    const userAnswer = answer?.submittedValue;
 
                     return (
                         <Card key={q.id} className={cn("border-l-4", isCorrect ? "border-l-green-500" : isSkipped ? "border-l-gray-300" : "border-l-red-500")}>
@@ -48,10 +48,11 @@ export default async function AnalysisPage({ params }: { params: Promise<{ testI
                             <CardContent className="space-y-4">
                                 <p className="font-medium whitespace-pre-wrap">{q.question}</p>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                                    {['A', 'B', 'C', 'D'].map((opt) => {
-                                        const val = q[`option${opt}` as keyof typeof q];
+                                    {['A', 'B', 'C', 'D'].map((opt, oIdx) => {
+                                        const option = q.options[oIdx];
+                                        const val = option?.text;
                                         const isSelected = userAnswer === opt;
-                                        const isRightOption = q.correctOption === opt;
+                                        const isRightOption = q.correctAnswer === opt;
 
                                         let style = "border p-3 rounded-md";
                                         if (isSelected && isRightOption) style += " bg-green-100 border-green-500 dark:bg-green-900";
@@ -66,7 +67,7 @@ export default async function AnalysisPage({ params }: { params: Promise<{ testI
                                     })}
                                 </div>
                                 <div className="text-sm text-muted-foreground mt-2">
-                                    Right Answer: <span className="font-bold">{q.correctOption}</span>
+                                    Right Answer: <span className="font-bold">{q.correctAnswer}</span>
                                 </div>
                             </CardContent>
                         </Card>
