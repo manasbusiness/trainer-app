@@ -124,7 +124,7 @@ export function StudentSidebar({ isCollapsed, onToggle, isMobileOpen, onMobileTo
 
             {/* Desktop Sidebar - Collapsible */}
             <div className={cn(
-                "hidden lg:flex h-screen flex-col bg-white border-r border-vega-gray-200 transition-all duration-300 dark:bg-background dark:border-border",
+                "hidden lg:flex h-screen flex-col bg-white border-r border-vega-gray-200 transition-all duration-300 dark:bg-background dark:border-border sticky top-0",
                 isCollapsed ? "w-14" : "w-56"
             )}>
                 <SidebarContent isCollapsed={isCollapsed} />

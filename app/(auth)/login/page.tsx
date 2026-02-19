@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,12 +13,10 @@ export default function LoginPage() {
     const router = useRouter();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setError("");
         setLoading(true);
 
         try {
@@ -33,10 +32,9 @@ export default function LoginPage() {
                 throw new Error(data.message || "Login failed");
             }
 
-            // Store access token if needed (though we might rely on HttpOnly cookies mostly, 
-            // but plan says Access Token in memory/JS).
-            // We'll store it in localStorage for now to simplify usage in API calls
-            // OR better, use a context. For now, localStorage is easiest proof of concept.
+            toast.success("Login successful");
+
+            // Store access token
             if (data.accessToken) {
                 localStorage.setItem("accessToken", data.accessToken);
                 localStorage.setItem("userRole", data.user.role);
@@ -48,9 +46,9 @@ export default function LoginPage() {
                 router.push("/student/dashboard");
             }
 
-            router.refresh(); // Refresh to update middleware state if reliant on cookies
+            router.refresh();
         } catch (err: any) {
-            setError(err.message);
+            toast.error(err.message || "Something went wrong");
         } finally {
             setLoading(false);
         }
@@ -85,9 +83,8 @@ export default function LoginPage() {
                             required
                         />
                     </div>
-                    {error && <p className="text-sm text-red-500">{error}</p>}
-                    <Button type="submit" className="w-full" disabled={loading}>
-                        {loading ? "Logging in..." : "Login"}
+                    <Button type="submit" className="w-full" isLoading={loading}>
+                        Login
                     </Button>
                 </form>
             </CardContent>

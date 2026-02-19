@@ -64,29 +64,6 @@ export default async function StudentDashboard() {
 
     return (
         <div className="space-y-4">
-            {/* Hero Section - Compact */}
-            <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-800 p-6 text-white">
-                <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full blur-3xl -mr-20 -mt-20" />
-                <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/10 rounded-full blur-3xl -ml-16 -mb-16" />
-                <div className="relative z-10">
-                    <div className="flex items-center gap-1.5 mb-2">
-                        <Sparkles className="h-4 w-4 text-yellow-300" />
-                        <span className="text-xs font-medium text-purple-200">Your Learning Journey</span>
-                    </div>
-                    <h1 className="text-2xl font-bold mb-1">Welcome back!</h1>
-                    <p className="text-sm text-purple-100 mb-4 max-w-2xl">
-                        Ready to challenge yourself? Continue your learning journey.
-                    </p>
-                    <Button asChild size="sm" variant="secondary" className="bg-white text-purple-700 hover:bg-purple-50 h-8 text-xs">
-                        <Link href="/student/tests" className="flex items-center gap-1.5">
-                            <BookOpen className="h-3.5 w-3.5" />
-                            Browse Tests
-                            <ArrowRight className="h-3 w-3" />
-                        </Link>
-                    </Button>
-                </div>
-            </div>
-
             {/* Stats Grid - Compact */}
             <div className="grid gap-4 md:grid-cols-3">
                 {/* Tests Attempted Card */}

@@ -86,29 +86,72 @@ export function TestRunner({ testId, questions, duration }: { testId: string, qu
                     <CardContent className="space-y-6">
                         <p className="text-lg font-medium whitespace-pre-wrap">{currentQuestion.question}</p>
 
-                        <div className="space-y-3">
-                            {['A', 'B', 'C', 'D'].map((option) => {
-                                const optionText = currentQuestion[`option${option}` as keyof typeof currentQuestion];
-                                const isSelected = answers[currentQuestion.id] === option;
-                                return (
-                                    <div
-                                        key={option}
-                                        className={cn(
-                                            "flex items-center space-x-3 border p-4 rounded-lg cursor-pointer hover:bg-muted transition-colors",
-                                            isSelected && "border-primary bg-primary/5"
-                                        )}
-                                        onClick={() => setAnswer(currentQuestion.id, option)}
-                                    >
-                                        <div className={cn(
-                                            "h-5 w-5 rounded-full border border-primary flex items-center justify-center",
-                                            isSelected && "bg-primary text-primary-foreground"
-                                        )}>
-                                            {isSelected && <div className="h-2.5 w-2.5 bg-white rounded-full" />}
-                                        </div>
-                                        <span className="flex-1">{optionText}</span>
+                        <div className="space-y-4">
+                            {/* MCQ & TRUE_FALSE */}
+                            {(currentQuestion.type === "MCQ" || currentQuestion.type === "TRUE_FALSE") && (
+                                <div className="space-y-3">
+                                    {currentQuestion.options?.map((option: any) => {
+                                        const isSelected = answers[currentQuestion.id] === option.id; // Use Option ID
+                                        return (
+                                            <div
+                                                key={option.id}
+                                                className={cn(
+                                                    "flex items-center space-x-3 border p-4 rounded-lg cursor-pointer hover:bg-muted transition-colors",
+                                                    isSelected && "border-primary bg-primary/5"
+                                                )}
+                                                onClick={() => setAnswer(currentQuestion.id, option.id)}
+                                            >
+                                                <div className={cn(
+                                                    "h-5 w-5 rounded-full border border-primary flex items-center justify-center",
+                                                    isSelected && "bg-primary text-primary-foreground"
+                                                )}>
+                                                    {isSelected && <div className="h-2.5 w-2.5 bg-white rounded-full" />}
+                                                </div>
+                                                <span className="flex-1">{option.text}</span>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                            )}
+
+                            {/* FILL IN THE BLANKS */}
+                            {currentQuestion.type === "FIB" && (
+                                <div className="space-y-2">
+                                    <Label htmlFor={`fib-${currentQuestion.id}`}>Your Answer</Label>
+                                    <input
+                                        id={`fib-${currentQuestion.id}`}
+                                        type="text"
+                                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                        placeholder="Type your answer here..."
+                                        value={answers[currentQuestion.id] || ""}
+                                        onChange={(e) => setAnswer(currentQuestion.id, e.target.value)}
+                                    />
+                                </div>
+                            )}
+
+                            {/* MATCHING - Simplified View for now */}
+                            {currentQuestion.type === "MATCHING" && (
+                                <div className="space-y-4">
+                                    <p className="text-sm text-muted-foreground">Match the items correctly:</p>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="font-semibold text-sm text-center border-b pb-2">Item</div>
+                                        <div className="font-semibold text-sm text-center border-b pb-2">Match</div>
+
+                                        {currentQuestion.options?.map((option: any) => (
+                                            <>
+                                                <div className="p-3 bg-muted/30 rounded-md flex items-center">{option.text}</div>
+                                                <div className="p-3 border rounded-md border-dashed flex items-center justify-center text-muted-foreground text-sm">
+                                                    {/* Placeholder for Drag Drop or Dropdown logic */}
+                                                    {option.matchText} (Drag here)
+                                                </div>
+                                            </>
+                                        ))}
                                     </div>
-                                )
-                            })}
+                                    <div className="p-2 bg-yellow-50 text-yellow-800 text-xs rounded border border-yellow-200">
+                                        Matching interaction under development. (Displays pairs for now)
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </CardContent>
                     <CardFooter className="flex justify-between">

@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, FileText, Activity, ShieldCheck, ChevronRight, TrendingUp } from "lucide-react";
+import { Users, FileText, Activity, ShieldCheck, TrendingUp, Plus } from "lucide-react";
 import { db } from "@/lib/db";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -18,90 +18,92 @@ export default async function AdminDashboard() {
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div className="flex flex-col gap-2">
-                <h1 className="text-2xl font-bold tracking-tight">Admin Overview</h1>
-                <p className="text-sm text-muted-foreground">Manage your platform's activity and resources.</p>
+            <div className="flex items-center justify-between">
+                <div>
+                    <h1 className="text-2xl font-bold text-vega-gray-700 dark:text-foreground">Admin Dashboard</h1>
+                    <p className="text-sm text-vega-gray-600 dark:text-muted-foreground mt-1">Manage platform activity and resources.</p>
+                </div>
+                <Button asChild size="sm">
+                    <Link href="/admin/tests/create">
+                        <Plus className="mr-2 h-4 w-4" /> Create Test
+                    </Link>
+                </Button>
             </div>
 
             {/* Stats Grid */}
             <div className="grid gap-4 md:grid-cols-3">
-                <Card className="hover:shadow-md transition-shadow">
+                <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                        <CardTitle className="text-sm font-medium text-vega-gray-600 dark:text-muted-foreground">
                             Total Students
                         </CardTitle>
-                        <div className="p-2 bg-indigo-100 dark:bg-indigo-900/50 rounded-lg">
-                            <Users className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
-                        </div>
+                        <Users className="h-4 w-4 text-indigo-600" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{stats.studentsCount}</div>
-                        <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
-                            <TrendingUp className="h-3 w-3" />
-                            Active learners
+                        <div className="text-2xl font-bold text-vega-gray-700 dark:text-foreground">{stats.studentsCount}</div>
+                        <p className="text-xs text-muted-foreground mt-1">
+                            Active users
                         </p>
                     </CardContent>
                 </Card>
 
-                <Card className="hover:shadow-md transition-shadow">
+                <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                        <CardTitle className="text-sm font-medium text-vega-gray-600 dark:text-muted-foreground">
                             Active Tests
                         </CardTitle>
-                        <div className="p-2 bg-purple-100 dark:bg-purple-900/50 rounded-lg">
-                            <FileText className="h-4 w-4 text-purple-600 dark:text-purple-400" />
-                        </div>
+                        <FileText className="h-4 w-4 text-purple-600" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{stats.testsCount}</div>
-                        <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
-                            <TrendingUp className="h-3 w-3" />
-                            Available assessments
+                        <div className="text-2xl font-bold text-vega-gray-700 dark:text-foreground">{stats.testsCount}</div>
+                        <p className="text-xs text-muted-foreground mt-1">
+                            Published assessments
                         </p>
                     </CardContent>
                 </Card>
 
-                <Card className="hover:shadow-md transition-shadow">
+                <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                        <CardTitle className="text-sm font-medium text-vega-gray-600 dark:text-muted-foreground">
                             Total Attempts
                         </CardTitle>
-                        <div className="p-2 bg-blue-100 dark:bg-blue-900/50 rounded-lg">
-                            <Activity className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                        </div>
+                        <Activity className="h-4 w-4 text-blue-600" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{stats.attemptsCount}</div>
-                        <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
-                            <TrendingUp className="h-3 w-3" />
-                            Engagement metrics
+                        <div className="text-2xl font-bold text-vega-gray-700 dark:text-foreground">{stats.attemptsCount}</div>
+                        <p className="text-xs text-muted-foreground mt-1">
+                            Student submissions
                         </p>
                     </CardContent>
                 </Card>
             </div>
 
-            {/* Quick Actions */}
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2">
-                <Link href="/admin/tests/create" className="block group">
-                    <Card className="h-full border-dashed hover:border-solid hover:border-primary transition-all hover:bg-slate-50 dark:hover:bg-slate-900/50">
-                        <CardContent className="flex flex-col items-center justify-center p-6 text-center space-y-2 h-full">
-                            <div className="p-3 bg-primary/10 rounded-full group-hover:scale-110 transition-transform">
-                                <FileText className="h-6 w-6 text-primary" />
-                            </div>
-                            <h3 className="font-semibold">Create New Test</h3>
-                            <p className="text-sm text-muted-foreground">Draft and publish a new assessment.</p>
+            {/* Quick Actions / Recent Activity could go here - placeholder for now to keep it clean */}
+            <div className="grid gap-4 md:grid-cols-2">
+                <Link href="/admin/students" className="block group">
+                    <Card className="h-full hover:border-vega-blue-500 transition-colors">
+                        <CardHeader>
+                            <CardTitle className="text-base flex items-center gap-2">
+                                <Users className="h-5 w-5 text-indigo-500" />
+                                Manage Students
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-sm text-muted-foreground">View student list, progress, and accounts.</p>
                         </CardContent>
                     </Card>
                 </Link>
 
-                <Link href="/admin/students" className="block group">
-                    <Card className="h-full border-dashed hover:border-solid hover:border-primary transition-all hover:bg-slate-50 dark:hover:bg-slate-900/50">
-                        <CardContent className="flex flex-col items-center justify-center p-6 text-center space-y-2 h-full">
-                            <div className="p-3 bg-primary/10 rounded-full group-hover:scale-110 transition-transform">
-                                <Users className="h-6 w-6 text-primary" />
-                            </div>
-                            <h3 className="font-semibold">Manage Students</h3>
-                            <p className="text-sm text-muted-foreground">View progress and manage accounts.</p>
+                <Link href="/admin/tests" className="block group">
+                    <Card className="h-full hover:border-vega-blue-500 transition-colors">
+                        <CardHeader>
+                            <CardTitle className="text-base flex items-center gap-2">
+                                <FileText className="h-5 w-5 text-purple-500" />
+                                Manage Tests
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-sm text-muted-foreground">Create, edit, or delete tests.</p>
                         </CardContent>
                     </Card>
                 </Link>

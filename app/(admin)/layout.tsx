@@ -1,18 +1,39 @@
-import { AdminSidebar } from "@/components/admin-sidebar";
+import { cookies } from "next/headers";
+import { verifyRefreshToken } from "@/lib/auth";
+import { db } from "@/lib/db";
+import AdminLayoutClient from "./admin-layout-client";
 
-export default function AdminLayout({
+async function getUser() {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("refresh_token")?.value;
+
+    if (!token) return null;
+
+    try {
+        const payload = await verifyRefreshToken(token);
+        if (!payload || typeof payload.userId !== 'string') return null;
+
+        const user = await db.user.findUnique({
+            where: { id: payload.userId },
+            select: { name: true, email: true }
+        });
+
+        return user;
+    } catch (e) {
+        return null;
+    }
+}
+
+export default async function AdminLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
+    const user = await getUser();
+
     return (
-        <div className="flex min-h-screen w-full">
-            <AdminSidebar />
-            <div className="flex flex-1 flex-col">
-                <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">
-                    {children}
-                </main>
-            </div>
-        </div>
+        <AdminLayoutClient user={user}>
+            {children}
+        </AdminLayoutClient>
     );
 }

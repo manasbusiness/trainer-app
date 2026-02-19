@@ -1,5 +1,8 @@
 import { db } from "@/lib/db";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { Eye } from "lucide-react";
 import { cookies } from "next/headers";
 import { verifyRefreshToken } from "@/lib/auth"; // Need to get userId
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -40,6 +43,7 @@ export default async function AnalyticsPage() {
                                     <TableHead>Date</TableHead>
                                     <TableHead>Score</TableHead>
                                     <TableHead>Accuracy</TableHead>
+                                    <TableHead className="text-right">Action</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -53,6 +57,14 @@ export default async function AnalyticsPage() {
                                             <TableCell>{h.score} / {h.test.totalMarks}</TableCell>
                                             <TableCell className={h.accuracy >= 70 ? "text-green-600" : "text-yellow-600"}>
                                                 {h.accuracy.toFixed(1)}%
+                                            </TableCell>
+                                            <TableCell className="text-right">
+                                                <Button size="sm" variant="ghost" asChild>
+                                                    <Link href={`/student/tests/${h.test.id}/results/${h.id}`}>
+                                                        <Eye className="h-4 w-4 mr-2" />
+                                                        View Analysis
+                                                    </Link>
+                                                </Button>
                                             </TableCell>
                                         </TableRow>
                                     ))

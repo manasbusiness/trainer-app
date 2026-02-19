@@ -1,45 +1,40 @@
-"use client";
+import { cookies } from "next/headers";
+import { verifyRefreshToken } from "@/lib/auth";
+import { db } from "@/lib/db";
+import StudentLayoutClient from "./student-layout-client";
 
-import { StudentSidebar } from "@/components/student-sidebar";
-import { StudentNavbar } from "@/components/student-navbar";
-import { useState } from "react";
+async function getUser() {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("refresh_token")?.value;
 
-export default function StudentLayout({
+    if (!token) return null;
+
+    try {
+        const payload = await verifyRefreshToken(token);
+        if (!payload || typeof payload.userId !== 'string') return null;
+
+        const user = await db.user.findUnique({
+            where: { id: payload.userId },
+            select: { name: true, email: true }
+        });
+
+        return user;
+    } catch (e) {
+        return null;
+    }
+}
+
+export default async function StudentLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
-    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-    const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
-
-    const handleToggleSidebar = () => {
-        // On mobile, toggle the sheet
-        if (typeof window !== 'undefined' && window.innerWidth < 1024) {
-            setIsMobileSidebarOpen(!isMobileSidebarOpen);
-        } else {
-            // On desktop, collapse/expand
-            setIsSidebarCollapsed(!isSidebarCollapsed);
-        }
-    };
+    const user = await getUser();
 
     return (
-        <div className="flex min-h-screen w-full bg-vega-gray-50 dark:bg-background">
-            <StudentSidebar
-                isCollapsed={isSidebarCollapsed}
-                onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-                isMobileOpen={isMobileSidebarOpen}
-                onMobileToggle={setIsMobileSidebarOpen}
-            />
-            <div className="flex flex-1 flex-col min-w-0">
-                <StudentNavbar
-                    onToggleSidebar={handleToggleSidebar}
-                    userName="John Doe"
-                    userEmail="john@example.com"
-                />
-                <main className="flex-1 p-3 md:p-4 lg:p-6">
-                    {children}
-                </main>
-            </div>
-        </div>
+        <StudentLayoutClient user={user}>
+            {children}
+        </StudentLayoutClient>
     );
 }
+
