@@ -50,9 +50,11 @@ export default async function AnalysisPage({ params }: { params: Promise<{ testI
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                                     {['A', 'B', 'C', 'D'].map((opt, oIdx) => {
                                         const option = q.options[oIdx];
-                                        const val = option?.text;
-                                        const isSelected = userAnswer === opt;
-                                        const isRightOption = q.correctAnswer === opt;
+                                        if (!option) return null;
+
+                                        const val = option.text;
+                                        const isSelected = userAnswer === option.id;
+                                        const isRightOption = option.isCorrect;
 
                                         let style = "border p-3 rounded-md";
                                         if (isSelected && isRightOption) style += " bg-green-100 border-green-500 dark:bg-green-900";
@@ -67,7 +69,7 @@ export default async function AnalysisPage({ params }: { params: Promise<{ testI
                                     })}
                                 </div>
                                 <div className="text-sm text-muted-foreground mt-2">
-                                    Right Answer: <span className="font-bold">{q.correctAnswer}</span>
+                                    Right Answer: <span className="font-bold">{q.options.find((o: any) => o.isCorrect)?.text || q.correctAnswer}</span>
                                 </div>
                             </CardContent>
                         </Card>

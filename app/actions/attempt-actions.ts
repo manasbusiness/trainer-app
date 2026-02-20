@@ -21,7 +21,7 @@ export async function submitTestAttempt(testId: string, answers: Record<string, 
     // 1. Fetch test and questions to calculate score
     const test = await db.test.findUnique({
         where: { id: testId },
-        include: { questions: true }
+        include: { questions: { include: { options: true } } }
     });
 
     if (!test) throw new Error("Test not found");
@@ -34,7 +34,16 @@ export async function submitTestAttempt(testId: string, answers: Record<string, 
     // 2. Calculate score
     for (const q of test.questions) {
         const selected = answers[q.id];
-        const isCorrect = selected === q.correctAnswer;
+        let isCorrect = false;
+
+        if (q.type === "MCQ" || q.type === "TRUE_FALSE") {
+            const selectedOption = q.options.find(o => o.id === selected);
+            isCorrect = selectedOption ? selectedOption.isCorrect : false;
+        } else if (q.type === "FIB") {
+            isCorrect = selected?.trim().toLowerCase() === q.correctAnswer?.trim().toLowerCase();
+        } else {
+            isCorrect = selected === q.correctAnswer;
+        }
 
         if (isCorrect) {
             score += q.marks;
